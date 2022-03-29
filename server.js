@@ -1,9 +1,9 @@
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 8080;
-const bodyParser = require("body-parser");
 var newRequest = require("request");
-app.use(bodyParser.urlencoded({ extended: false }));
+var municipalities = require("./Helper");
+app.use(express.json(app));
 
 app.get("/", (req, res) => res.send("Hello World!"));
 app.get("/favicon.ico", (req, res) => res.send("Hello World!"));
@@ -22,6 +22,17 @@ app.post("/weather", (req, res) => {
         };
     }
   );
+});
+app.post("/spain", (req, res) => {
+  let input = req.body.userInput;
+  console.log("req is", req.body.userInput);
+  if (req.body.userInput) {
+    const temp = municipalities.filter((item) => item.name.includes(input));
+    console.log("temp i s", temp);
+    temp.length
+      ? res.send(temp[0])
+      : res.send({ success: false, message: "No Data found" });
+  }
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port} !`));
